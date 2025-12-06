@@ -1,0 +1,86 @@
+/*
+|--------------------------------------------------------------------------
+| GLOBAL CSS VARIABLES (COLOR PALETTE)
+|--------------------------------------------------------------------------
+| Definisi variabel CSS agar warna dapat digunakan di seluruh proyek, 
+| termasuk di inline style atau utilitas kustom.
+*/
+
+:root {
+  /* Palet Warna Kustom */
+  
+  /* Base Color (003024 - Hijau Gelap) */
+  --color-base: #003024;
+
+  /* Accent/Important Color (83C540 - Hijau Limau Cerah) */
+  --color-accent: #83C540;
+
+  /* Light Text Color (FFFFFF - Putih) */
+  --color-text-light: #FFFFFF;
+
+  /* Dark Text Color (Untuk kontras di atas latar belakang putih) */
+  --color-text-dark: #333333; 
+}
+
+/*
+|--------------------------------------------------------------------------
+| BASE STYLES
+|--------------------------------------------------------------------------
+| Terapkan warna dasar ke elemen utama.
+*/
+
+body {
+    /* Menerapkan latar belakang hijau gelap ke seluruh halaman */
+    background-color: var(--color-base); 
+    
+    /* Warna teks default pada body (opsional, jika body berada di atas warna base) */
+    color: var(--color-text-light); 
+}
+
+h1, h2, h3, h4 {
+    /* Atur warna heading agar terlihat di atas background gelap */
+    color: var(--color-text-light); 
+}
+
+/*
+|--------------------------------------------------------------------------
+| CUSTOM TAILWIND UTILITIES (Jika tidak menggunakan tailwind.config.js)
+|--------------------------------------------------------------------------
+| Ini diperlukan agar kelas seperti 'bg-primary-base' dapat digunakan di markup EJS 
+| tanpa harus mengkonfigurasi Tailwind secara eksternal.
+*/
+
+/* BACKGROUNDS */
+.bg-primary-base {
+    background-color: var(--color-base);
+}
+
+.bg-primary-accent {
+    background-color: var(--color-accent);
+}
+
+/* TEXT COLORS */
+.text-primary-base {
+    color: var(--color-base);
+}
+
+.text-primary-accent {
+    color: var(--color-accent);
+}
+
+.text-secondary-text {
+    color: var(--color-text-light);
+}
+
+.text-content-dark {
+    color: var(--color-text-dark);
+}
+
+/* HOVER EFFECTS */
+.hover\:bg-primary-accent:hover {
+    background-color: var(--color-accent);
+}
+
+.hover\:text-primary-accent:hover {
+    color: var(--color-accent);
+}

@@ -4,16 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kelola Kegiatan</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/globals.css">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              'primary-base': '#003024',       // Base Color (Hijau Gelap)
+              'primary-accent': '#83C540',     // Accent Color (Hijau Muda)
+              'text-light': '#FFFFFF',         // Teks Putih
+              'text-dark': '#333333',          // Teks Gelap
+            }
+          }
+        }
+      }
+    </script>
 </head>
-<body class="flex bg-gray-100">
+
+<body class="flex bg-gray-100"> 
     <%- include('../../partials/admin_sidebar.ejs') %>
     <main class="flex-1 p-10">
         <%- include('../../partials/flash.ejs') %>
         
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Kelola Kegiatan</h1>
-            <a href="/admin/kegiatan/new" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">
+            <h1 class="text-3xl font-bold text-primary-base">Kelola Kegiatan</h1>
+            <a href="/admin/kegiatan/new" class="bg-primary-accent hover:bg-primary-base text-text-light font-bold py-2 px-4 rounded-lg transition duration-150">
                 + Tambah Kegiatan
             </a>
         </div>
@@ -21,14 +38,14 @@
         <form action="/admin/kegiatan/bulk-action" method="POST" id="bulk-form">
             <input type="hidden" name="action" value="delete">
             <div class="mb-4">
-                <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-150">
                     Hapus yang Dipilih
                 </button>
             </div>
             
             <div class="bg-white p-6 rounded-lg shadow-lg overflow-x-auto">
                 <table class="min-w-full bg-white">
-                    <thead class="bg-gray-200 text-gray-700">
+                    <thead class="bg-gray-200 text-primary-base">
                         <tr>
                             <th class="py-3 px-4 text-center w-12">
                                 <input type="checkbox" id="select-all">
@@ -41,7 +58,7 @@
                             <th class="py-3 px-4 text-center">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody class="text-gray-700">
+                    <tbody class="text-text-dark">
                         <% if(kegiatanList && kegiatanList.length > 0) { %>
                             <% for(let kegiatan of kegiatanList) { %>
                                 <tr class="border-b border-gray-200 hover:bg-gray-50">
@@ -63,21 +80,21 @@
                                     </td>
                                     <td class="py-3 px-4"><%= kegiatan.Kategori || '-' %></td>
                                     <td class="py-3 px-4">
-                                        <span class="font-medium <%= kegiatan.Status === 'Upcoming' ? 'text-green-600' : 'text-gray-600' %>">
+                                        <span class="font-medium <%= kegiatan.Status === 'Upcoming' ? 'text-primary-accent' : 'text-gray-600' %>">
                                             <%= kegiatan.Status %>
                                         </span>
                                     </td>
                                     <td class="py-3 px-4 text-center flex items-center justify-center space-x-2">
-                                        <a href="/admin/kegiatan/<%= kegiatan.ID_Kegiatan %>" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 rounded-lg text-sm">
+                                        <a href="/admin/kegiatan/<%= kegiatan.ID_Kegiatan %>" class="bg-primary-base hover:bg-primary-accent text-white font-semibold py-1 px-3 rounded-lg text-sm transition duration-150">
                                             Detail
                                         </a>
-                                        <a href="/admin/kegiatan/<%= kegiatan.ID_Kegiatan %>/edit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-3 rounded-lg text-sm">
+                                        <a href="/admin/kegiatan/<%= kegiatan.ID_Kegiatan %>/edit" class="bg-yellow-600 hover:bg-yellow-700 text-white font-semibold py-1 px-3 rounded-lg text-sm transition duration-150">
                                             Edit
                                         </a>
                                         
                                         <button 
                                             type="button" 
-                                            class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-3 rounded-lg text-sm"
+                                            class="bg-red-600 hover:bg-red-700 text-white font-semibold py-1 px-3 rounded-lg text-sm transition duration-150"
                                             onclick="deleteItem('<%= kegiatan.ID_Kegiatan %>', '<%= kegiatan.Judul.replace(/'/g, "\\'") %>')">
                                             Hapus
                                         </button>

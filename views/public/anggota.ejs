@@ -5,77 +5,356 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Anggota - Bausasran</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. GLOBAL THEME --- */
+        body {
+            background-color: #003024 !important;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #FFFFFF;
+        }
+
+        /* Pattern Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 50% 10%, rgba(131, 197, 64, 0.05) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- 2. HEADER --- */
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 300;
+            color: #e5e7eb;
+        }
+        .divider {
+            height: 4px;
+            width: 60px;
+            background: #83C540;
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+
+        /* --- 3. CONTROLS (SEARCH & FILTER) --- */
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 3rem;
+        }
+
+        /* Search Bar Style */
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 20px 12px 50px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
+        .search-input:focus {
+            background: rgba(255,255,255,0.2);
+            border-color: #83C540;
+            box-shadow: 0 0 15px rgba(131, 197, 64, 0.3);
+        }
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #ccc;
+        }
+
+        /* Filter Buttons */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 10px 28px;
+            border-radius: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .filter-btn:hover {
+            background-color: rgba(131, 197, 64, 0.1);
+            color: #83C540;
+            border-color: #83C540;
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background-color: #83C540 !important;
+            color: #003024 !important;
+            border-color: #83C540 !important;
+            box-shadow: 0 0 15px rgba(131, 197, 64, 0.4);
+        }
+
+        /* --- 4. GRID & CARDS --- */
+        .anggota-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 30px;
+        }
+
+        .member-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, opacity 0.4s ease;
+            position: relative;
+            /* Animation State */
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* Filter Animations */
+        .member-card.anim-out {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+        .member-card.hidden-item {
+            display: none;
+        }
+
+        /* Image Section */
+        .img-container {
+            height: 280px;
+            width: 100%;
+            position: relative;
+            background-color: #f3f4f6;
+            overflow: hidden;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .member-card:hover .img-container img {
+            transform: scale(1.05);
+        }
+
+        /* Fallback Avatar (Initials) */
+        .avatar-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #003024 0%, #004d3a 100%);
+            color: rgba(255,255,255,0.2);
+            font-size: 5rem;
+            font-weight: bold;
+        }
+
+        /* Badges */
+        .role-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 2;
+        }
+        .role-admin { background: #8b5cf6; color: white; }
+        .role-user { background: #83C540; color: #003024; }
+
+        /* Content Section */
+        .card-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .member-name {
+            color: #111;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .member-position {
+            color: #83C540;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            text-align: left;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .contact-item i {
+            color: #83C540;
+            margin-top: 3px;
+            width: 16px;
+        }
+
+        .btn-profile {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #003024;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn-profile:hover {
+            background: #83C540;
+            color: #003024;
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body>
 
     <%- include('../partials/navbar.ejs') %>
 
     <main class="container mx-auto p-6 md:p-12">
         <%- include('../partials/flash.ejs') %>
 
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Tim Kami</h1>
-            <p class="text-lg text-gray-600">Kenali para anggota yang berdedikasi untuk kemajuan Bausasran</p>
+        <div class="text-center mb-8 animate-fade-in">
+            <h1 class="page-title">Tim Kami</h1>
+            <p class="page-subtitle">Kenali para anggota yang berdedikasi untuk kemajuan Bausasran</p>
+            <div class="divider"></div>
         </div>
 
-        <!-- Filter by Role -->
-        <div class="flex justify-center mb-8 space-x-4">
-            <button onclick="filterAnggota('all')" class="filter-btn px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                Semua
-            </button>
-            <button onclick="filterAnggota('Admin')" class="filter-btn px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-                Admin
-            </button>
-            <button onclick="filterAnggota('User')" class="filter-btn px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-                Anggota
-            </button>
+        <div class="controls-container animate-fade-in" style="animation-delay: 0.2s;">
+            <div class="search-wrapper">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari nama anggota..." onkeyup="filterMaster()">
+            </div>
+
+            <div class="filter-container">
+                <button onclick="setRole('all', this)" class="filter-btn active">Semua</button>
+                <button onclick="setRole('Admin', this)" class="filter-btn">Admin</button>
+                <button onclick="setRole('User', this)" class="filter-btn">Anggota</button>
+            </div>
         </div>
 
-        <!-- Anggota Grid -->
         <% if(anggotaList && anggotaList.length > 0) { %>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                <% anggotaList.forEach(anggota => { %>
-                    <div class="anggota-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-2" data-role="<%= anggota.Role %>">
-                        <!-- Photo -->
-                        <div class="relative h-64 bg-gray-200">
+            <div class="anggota-grid">
+                <% anggotaList.forEach((anggota, index) => { %>
+                    <div class="member-card animate-fade-in" 
+                         style="animation-delay: <%= 0.3 + (index * 0.05) %>s"
+                         data-role="<%= anggota.Role %>"
+                         data-name="<%= anggota.Nama.toLowerCase() %>">
+                        
+                        <div class="img-container">
+                            <span class="role-badge <%= anggota.Role === 'Admin' ? 'role-admin' : 'role-user' %>">
+                                <%= anggota.Role %>
+                            </span>
+
                             <% if (anggota.dataValues.fotoFile) { %>
                                 <img src="/images/anggota/<%= anggota.dataValues.fotoFile %>" 
-                                     alt="<%= anggota.Nama %>" 
-                                     class="w-full h-full object-cover">
+                                     alt="<%= anggota.Nama %>"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                                <div class="avatar-placeholder" style="display:none">
+                                    <%= anggota.Nama.charAt(0).toUpperCase() %>
+                                </div>
                             <% } else { %>
-                                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-400 to-blue-600">
-                                    <svg class="w-32 h-32 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                                    </svg>
+                                <div class="avatar-placeholder">
+                                    <%= anggota.Nama.charAt(0).toUpperCase() %>
                                 </div>
                             <% } %>
-                            <!-- Role Badge -->
-                            <div class="absolute top-4 right-4">
-                                <span class="px-3 py-1 <%= anggota.Role === 'Admin' ? 'bg-purple-500' : 'bg-green-500' %> text-white text-xs font-bold rounded-full">
-                                    <%= anggota.Role %>
-                                </span>
-                            </div>
                         </div>
 
-                        <!-- Info -->
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-900 mb-2"><%= anggota.Nama %></h3>
-                            <% if (anggota.Jabatan) { %>
-                                <p class="text-blue-600 font-semibold mb-3"><%= anggota.Jabatan %></p>
-                            <% } %>
-                            <% if (anggota.No_Telepon) { %>
-                                <p class="text-gray-600 text-sm mb-2">
-                                    📞 <%= anggota.No_Telepon %>
-                                </p>
-                            <% } %>
-                            <% if (anggota.Alamat) { %>
-                                <p class="text-gray-600 text-sm mb-4">
-                                    📍 <%= anggota.Alamat.substring(0, 50) %><%= anggota.Alamat.length > 50 ? '...' : '' %>
-                                </p>
-                            <% } %>
-                            <a href="/anggota/<%= anggota.ID_Pengguna %>" 
-                               class="block w-full text-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                        <div class="card-info">
+                            <h3 class="member-name"><%= anggota.Nama %></h3>
+                            
+                            <span class="member-position">
+                                <%= anggota.Jabatan || 'Anggota Bausasran' %>
+                            </span>
+
+                            <ul class="contact-list">
+                                <% if (anggota.No_Telepon) { %>
+                                    <li class="contact-item">
+                                        <i class="fas fa-phone-alt"></i>
+                                        <span><%= anggota.No_Telepon %></span>
+                                    </li>
+                                <% } %>
+                                <% if (anggota.Alamat) { %>
+                                    <li class="contact-item">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <span>
+                                            <%= anggota.Alamat.length > 40 ? anggota.Alamat.substring(0, 40) + '...' : anggota.Alamat %>
+                                        </span>
+                                    </li>
+                                <% } %>
+                            </ul>
+
+                            <a href="/anggota/<%= anggota.ID_Pengguna %>" class="btn-profile">
                                 Lihat Profil
                             </a>
                         </div>
@@ -83,12 +362,10 @@
                 <% }) %>
             </div>
         <% } else { %>
-            <div class="text-center py-16">
-                <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
-                </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Anggota</h3>
-                <p class="text-gray-500">Data anggota akan segera hadir!</p>
+            <div class="text-center py-20 text-gray-400 animate-fade-in">
+                <i class="fas fa-users-slash fa-4x mb-4 opacity-50"></i>
+                <h3 class="text-xl font-semibold text-white mb-2">Belum Ada Anggota</h3>
+                <p>Data anggota akan segera hadir!</p>
             </div>
         <% } %>
     </main>
@@ -96,24 +373,56 @@
     <%- include('../partials/footer.ejs') %>
 
     <script>
-        function filterAnggota(role) {
-            const cards = document.querySelectorAll('.anggota-card');
+        // State Global untuk menyimpan Role yang aktif
+        let currentRole = 'all';
+
+        function setRole(role, btnElement) {
+            currentRole = role;
+
+            // 1. Update Button Visual (Active Class)
             const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
             
-            // Update button styles
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-blue-500', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
-            });
-            event.target.classList.remove('bg-gray-200', 'text-gray-700');
-            event.target.classList.add('bg-blue-500', 'text-white');
+            // 2. Trigger Logic Filter Utama
+            filterMaster();
+        }
+
+        function filterMaster() {
+            // Ambil text dari search bar
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.member-card');
             
-            // Filter cards
             cards.forEach(card => {
-                if (role === 'all' || card.dataset.role === role) {
-                    card.style.display = 'block';
+                // Ambil data atribut card
+                const cardRole = card.getAttribute('data-role');
+                const cardName = card.getAttribute('data-name');
+
+                // Logic 1: Cek Role
+                const isRoleMatch = (currentRole === 'all') || (cardRole === currentRole);
+
+                // Logic 2: Cek Nama (Search)
+                const isSearchMatch = cardName.includes(searchTerm);
+
+                // Jika KEDUANYA true, tampilkan card
+                if (isRoleMatch && isSearchMatch) {
+                    // Show
+                    if(card.classList.contains('hidden-item')) {
+                        card.classList.remove('hidden-item');
+                        setTimeout(() => {
+                            card.classList.remove('anim-out');
+                        }, 50);
+                    } else {
+                        card.classList.remove('anim-out');
+                    }
                 } else {
-                    card.style.display = 'none';
+                    // Hide
+                    card.classList.add('anim-out');
+                    setTimeout(() => {
+                        if(card.classList.contains('anim-out')){
+                            card.classList.add('hidden-item');
+                        }
+                    }, 400); 
                 }
             });
         }

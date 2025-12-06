@@ -5,172 +5,469 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Testimoni - Bausasran</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. GLOBAL THEME --- */
+        body {
+            background-color: #003024 !important;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #FFFFFF;
+        }
+
+        /* Pattern Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 50% 50%, rgba(131, 197, 64, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- 2. HEADER --- */
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #FFFFFF;
+        }
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 300;
+            color: #e5e7eb;
+        }
+        .divider {
+            height: 4px;
+            width: 60px;
+            background: #83C540;
+            margin: 20px auto;
+            border-radius: 2px;
+        }
+
+        /* --- 3. CTA BOX (GLASSMORPHISM) --- */
+        .cta-container {
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Decorative line inside CTA */
+        .cta-container::before {
+            content: "";
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+        }
+        .cta-login::before { background: #3b82f6; } /* Blue for Login */
+        .cta-write::before { background: #83C540; } /* Green for Write */
+
+        .btn-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-blue {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+        }
+        .btn-green {
+            background: linear-gradient(135deg, #83C540, #65a30d);
+            color: #003024;
+            box-shadow: 0 4px 15px rgba(131, 197, 64, 0.4);
+        }
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            opacity: 0.95;
+        }
+
+        /* --- 4. FILTERS --- */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 8px 24px;
+            border-radius: 50px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #ccc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background-color: #83C540;
+            color: #003024;
+            border-color: #83C540;
+        }
+
+        /* --- 5. TESTIMONIAL CARDS --- */
+        .testimoni-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .testimoni-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, opacity 0.4s;
+            overflow: hidden;
+            
+            /* Animasi State */
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .testimoni-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Animasi Filter Styles */
+        .testimoni-card.anim-out {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+        .testimoni-card.hidden-item {
+            display: none;
+        }
+
+        /* Decorative Quote Icon */
+        .quote-icon-bg {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 5rem;
+            color: #f3f4f6;
+            font-family: serif;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* User Header */
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid #83C540;
+        }
+
+        .user-avatar-placeholder {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #003024, #1a4c3f);
+            color: #83C540;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .user-info h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111;
+            margin: 0;
+        }
+
+        .review-id {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Rating & Badge */
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .rating-stars {
+            color: #facc15; /* Yellow */
+            font-size: 0.9rem;
+        }
+
+        .category-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .badge-product { background: #e0e7ff; color: #4338ca; } /* Indigo */
+        .badge-kegiatan { background: #dcfce7; color: #166534; } /* Green */
+
+        /* Text Body */
+        .review-text {
+            color: #4b5563;
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Footer Link */
+        .card-footer {
+            border-top: 1px solid #f3f4f6;
+            padding-top: 15px;
+        }
+        
+        .related-link {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #2563eb;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .related-link:hover {
+            color: #1d4ed8;
+            text-decoration: underline;
+        }
+
+        /* Pagination Simple */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 3rem;
+        }
+        .page-link {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .page-link:hover { background: #83C540; color: #003024; }
+        .page-link.active { background: #83C540; color: #003024; font-weight: bold; }
+
+        /* Animation Keyframes */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body>
 
     <%- include('../partials/navbar.ejs') %>
 
     <main class="container mx-auto p-6 md:p-12">
         <%- include('../partials/flash.ejs') %>
 
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Testimoni</h1>
-            <p class="text-lg text-gray-600">Apa kata mereka tentang produk dan kegiatan kami</p>
+        <div class="page-header animate-fade-in">
+            <h1 class="page-title">Apa Kata Mereka?</h1>
+            <p class="page-subtitle">Pengalaman nyata dari pelanggan dan anggota komunitas Bausasran.</p>
+            <div class="divider"></div>
         </div>
 
-        <!-- CTA: Login to add testimonial -->
-        <% if (!currentUser) { %>
-            <div class="max-w-2xl mx-auto mb-8 bg-blue-50 border-2 border-blue-200 rounded-lg p-6 text-center">
-                <p class="text-blue-900 mb-4">Ingin berbagi pengalaman Anda dengan kami?</p>
-                <a href="/login" class="inline-block px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition">
-                    Login untuk Memberi Testimoni
-                </a>
-            </div>
-        <% } else if (currentUser.Role === 'User') { %>
-            <div class="max-w-2xl mx-auto mb-8 bg-green-50 border-2 border-green-200 rounded-lg p-6 text-center">
-                <p class="text-green-900 mb-4">Bagikan pengalaman Anda tentang produk atau kegiatan kami!</p>
-                <a href="/user/testimoni/tambah" class="inline-block px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition">
-                    Tulis Testimoni
-                </a>
-            </div>
-        <% } %>
-
-        <!-- Filter -->
-        <div class="flex justify-center mb-8 space-x-4">
-            <button onclick="filterTestimoni('all')" class="filter-btn px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
-                Semua
-            </button>
-            <button onclick="filterTestimoni('Product')" class="filter-btn px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-                Produk
-            </button>
-            <button onclick="filterTestimoni('Kegiatan')" class="filter-btn px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-                Kegiatan
-            </button>
+        <div class="animate-fade-in" style="animation-delay: 0.1s;">
+            <% if (!currentUser) { %>
+                <div class="cta-container cta-login">
+                    <p class="text-gray-200 mb-4 text-lg">Ingin berbagi pengalaman Anda dengan kami?</p>
+                    <a href="/login" class="btn-cta btn-blue">
+                        <i class="fas fa-sign-in-alt"></i> Login untuk Memberi Testimoni
+                    </a>
+                </div>
+            <% } else if (currentUser.Role === 'User') { %>
+                <div class="cta-container cta-write">
+                    <p class="text-gray-200 mb-4 text-lg">Bagikan pengalaman Anda tentang produk atau kegiatan kami!</p>
+                    <a href="/user/testimoni/tambah" class="btn-cta btn-green">
+                        <i class="fas fa-pen"></i> Tulis Testimoni Baru
+                    </a>
+                </div>
+            <% } %>
         </div>
 
-        <!-- Testimonials Grid -->
+        <div class="filter-container animate-fade-in" style="animation-delay: 0.2s;">
+            <button onclick="filterTestimoni('all', this)" class="filter-btn active">Semua</button>
+            <button onclick="filterTestimoni('Product', this)" class="filter-btn">Produk</button>
+            <button onclick="filterTestimoni('Kegiatan', this)" class="filter-btn">Kegiatan</button>
+        </div>
+
         <% if(testimoniList && testimoniList.length > 0) { %>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <% testimoniList.forEach(testimoni => { %>
-                    <div class="testimoni-card bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-all transform hover:-translate-y-2" data-kategori="<%= testimoni.Kategori %>">
-                        <!-- Header -->
-                        <div class="flex items-center mb-4">
-                            <!-- User Photo -->
-                            <% if (testimoni.dataValues.penggunaFoto) { %>
-                                <img src="/images/anggota/<%= testimoni.dataValues.penggunaFoto %>" 
-                                     alt="<%= testimoni.dataValues.penggunaName || 'User' %>" 
-                                     class="w-12 h-12 rounded-full object-cover mr-4">
-                            <% } else { %>
-                                <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-4">
-                                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
-                                    </svg>
+            <div class="testimoni-grid">
+                <% testimoniList.forEach((testimoni, index) => { %>
+                    <div class="testimoni-card animate-fade-in" 
+                         style="animation-delay: <%= 0.2 + (index * 0.05) %>s"
+                         data-kategori="<%= testimoni.Kategori %>">
+                        
+                        <div class="quote-icon-bg"><i class="fas fa-quote-right"></i></div>
+
+                        <div class="card-content">
+                            <div class="card-header">
+                                <% if (testimoni.dataValues.penggunaFoto) { %>
+                                    <img src="/images/anggota/<%= testimoni.dataValues.penggunaFoto %>" 
+                                         alt="User" class="user-avatar">
+                                <% } else { %>
+                                    <div class="user-avatar-placeholder">
+                                        <%= (testimoni.dataValues.penggunaName || 'A').charAt(0).toUpperCase() %>
+                                    </div>
+                                <% } %>
+                                
+                                <div class="user-info">
+                                    <h3><%= testimoni.dataValues.penggunaName || 'Pengguna' %></h3>
+                                    <span class="review-id">Review #<%= testimoni.ID_Review %></span>
+                                </div>
+                            </div>
+
+                            <div class="meta-row">
+                                <div class="rating-stars" title="Rating: <%= testimoni.Rating %>/5">
+                                    <% for(let i = 1; i <= 5; i++) { %>
+                                        <% if(i <= testimoni.Rating) { %>
+                                            <i class="fas fa-star"></i>
+                                        <% } else { %>
+                                            <i class="far fa-star text-gray-300"></i>
+                                        <% } %>
+                                    <% } %>
+                                </div>
+
+                                <span class="category-badge <%= testimoni.Kategori === 'Product' ? 'badge-product' : 'badge-kegiatan' %>">
+                                    <%= testimoni.Kategori === 'Product' ? 'Produk' : 'Kegiatan' %>
+                                </span>
+                            </div>
+
+                            <p class="review-text">
+                                "<%= testimoni.Testimoni %>"
+                            </p>
+
+                            <% if (testimoni.dataValues.entityName) { %>
+                                <div class="card-footer">
+                                    <% if (testimoni.Kategori === 'Product' && testimoni.ID_Product) { %>
+                                        <a href="/produk/<%= testimoni.ID_Product %>" class="related-link">
+                                            Lihat Produk: <%= testimoni.dataValues.entityName %> <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    <% } else if (testimoni.Kategori === 'Kegiatan' && testimoni.ID_Kegiatan) { %>
+                                        <a href="/kegiatan/<%= testimoni.ID_Kegiatan %>" class="related-link">
+                                            Lihat Kegiatan: <%= testimoni.dataValues.entityName %> <i class="fas fa-arrow-right ml-1"></i>
+                                        </a>
+                                    <% } else { %>
+                                        <span class="text-sm text-gray-400">Terkait: <%= testimoni.dataValues.entityName %></span>
+                                    <% } %>
                                 </div>
                             <% } %>
-                            <div class="flex-1">
-                                <h3 class="font-bold text-gray-900"><%= testimoni.dataValues.penggunaName || 'Anonymous' %></h3>
-                                <p class="text-gray-500 text-sm">
-                                    Review #<%= testimoni.ID_Review %>
-                                </p>
-                            </div>
                         </div>
-
-                        <!-- Rating -->
-                        <div class="flex items-center mb-3">
-                            <% for(let i = 1; i <= 5; i++) { %>
-                                <% if(i <= testimoni.Rating) { %>
-                                    ⭐
-                                <% } else { %>
-                                    <span class="text-gray-300">⭐</span>
-                                <% } %>
-                            <% } %>
-                            <span class="ml-2 text-gray-600 font-semibold"><%= testimoni.Rating %>/5</span>
-                        </div>
-
-                        <!-- Category Badge -->
-                        <div class="mb-3">
-                            <span class="px-3 py-1 <%= testimoni.Kategori === 'Product' ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800' %> text-xs font-bold rounded-full">
-                                <%= testimoni.Kategori === 'Product' ? '🛍️ Produk' : '🎉 Kegiatan' %>
-                            </span>
-                            <% if (testimoni.dataValues.entityName) { %>
-                                <span class="ml-2 text-gray-600 text-sm">
-                                    "<%= testimoni.dataValues.entityName %>"
-                                </span>
-                            <% } %>
-                        </div>
-
-                        <!-- Review Text -->
-                        <p class="text-gray-700 leading-relaxed">
-                            "<%= testimoni.Testimoni %>"
-                        </p>
-
-                        <!-- Link to entity -->
-                        <% if (testimoni.ID_Product && testimoni.Kategori === 'Product') { %>
-                            <a href="/produk/<%= testimoni.ID_Product %>" class="block mt-4 text-blue-500 hover:text-blue-700 font-semibold text-sm">
-                                Lihat Produk →
-                            </a>
-                        <% } else if (testimoni.ID_Kegiatan && testimoni.Kategori === 'Kegiatan') { %>
-                            <a href="/kegiatan/<%= testimoni.ID_Kegiatan %>" class="block mt-4 text-blue-500 hover:text-blue-700 font-semibold text-sm">
-                                Lihat Kegiatan →
-                            </a>
-                        <% } %>
                     </div>
                 <% }) %>
             </div>
         <% } else { %>
-            <div class="text-center py-16">
-                <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z"/>
-                    <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z"/>
-                </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Testimoni</h3>
-                <p class="text-gray-500">Jadilah yang pertama memberikan testimoni!</p>
+            <div class="text-center py-20 animate-fade-in">
+                <div class="inline-block p-6 rounded-full bg-white bg-opacity-10 mb-4">
+                    <i class="far fa-comment-dots fa-3x text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Belum Ada Testimoni</h3>
+                <p class="text-gray-400">Jadilah yang pertama memberikan ulasan!</p>
             </div>
         <% } %>
 
-        <!-- Pagination (if needed) -->
         <% if(testimoniList && testimoniList.length > 12) { %>
-            <div class="mt-12 flex justify-center">
-                <nav class="inline-flex rounded-md shadow">
-                    <a href="#" class="px-3 py-2 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
-                        Previous
-                    </a>
-                    <a href="#" class="px-3 py-2 border-t border-b border-gray-300 bg-blue-500 text-white">
-                        1
-                    </a>
-                    <a href="#" class="px-3 py-2 border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-                        2
-                    </a>
-                    <a href="#" class="px-3 py-2 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50">
-                        Next
-                    </a>
-                </nav>
+            <div class="pagination">
+                <a href="#" class="page-link">&laquo;</a>
+                <a href="#" class="page-link active">1</a>
+                <a href="#" class="page-link">2</a>
+                <a href="#" class="page-link">&raquo;</a>
             </div>
         <% } %>
+
     </main>
 
     <%- include('../partials/footer.ejs') %>
 
     <script>
-        function filterTestimoni(kategori) {
-            const cards = document.querySelectorAll('.testimoni-card');
+        function filterTestimoni(kategori, btnElement) {
+            // 1. Update Button State
             const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            if(btnElement) btnElement.classList.add('active');
             
-            // Update button styles
-            buttons.forEach(btn => {
-                btn.classList.remove('bg-blue-500', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
-            });
-            event.target.classList.remove('bg-gray-200', 'text-gray-700');
-            event.target.classList.add('bg-blue-500', 'text-white');
+            // 2. Filter Logic with Animation
+            const cards = document.querySelectorAll('.testimoni-card');
             
-            // Filter cards
             cards.forEach(card => {
-                if (kategori === 'all' || card.dataset.kategori === kategori) {
-                    card.style.display = 'block';
+                const cardKategori = card.getAttribute('data-kategori');
+                // Check match (all, Product, or Kegiatan)
+                const isMatch = (kategori === 'all') || (cardKategori === kategori);
+
+                if (isMatch) {
+                    // Show Item
+                    if(card.classList.contains('hidden-item')) {
+                        card.classList.remove('hidden-item');
+                        // Small delay to allow CSS transition to happen
+                        setTimeout(() => {
+                            card.classList.remove('anim-out');
+                        }, 50);
+                    } else {
+                        card.classList.remove('anim-out');
+                    }
                 } else {
-                    card.style.display = 'none';
+                    // Hide Item
+                    card.classList.add('anim-out');
+                    setTimeout(() => {
+                        if(card.classList.contains('anim-out')){
+                            card.classList.add('hidden-item');
+                        }
+                    }, 400); // Matches transition duration
                 }
             });
         }

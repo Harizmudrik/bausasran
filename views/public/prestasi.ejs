@@ -5,50 +5,312 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prestasi - Bausasran</title>
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. GLOBAL THEME --- */
+        body {
+            background-color: #003024 !important;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            color: #FFFFFF;
+            overflow-x: hidden;
+        }
+
+        /* Pattern Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 50% 10%, rgba(250, 204, 21, 0.05) 0%, transparent 60%); /* Gold hint */
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        main {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- 2. HEADER --- */
+        .page-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #FFFFFF;
+        }
+        .page-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-weight: 300;
+            color: #e5e7eb;
+        }
+        .divider {
+            height: 4px;
+            width: 60px;
+            background: #FACC15; /* Gold for Prestasi */
+            margin: 20px auto;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+        }
+
+        /* --- 3. TIMELINE STYLES --- */
+        .timeline-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* Vertical Line */
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 60px;
+            width: 100%;
+            opacity: 0; /* Hidden initially for animation */
+            transition: all 0.8s ease;
+        }
+
+        .timeline-item.show {
+            opacity: 1;
+        }
+
+        /* Content Wrapper positioning */
+        .timeline-content-wrapper {
+            position: relative;
+            width: 45%;
+        }
+
+        /* Left Side */
+        .timeline-item:nth-child(odd) .timeline-content-wrapper {
+            left: 0;
+            transform: translateX(-50px); /* Animation start pos */
+        }
+        .timeline-item:nth-child(odd).show .timeline-content-wrapper {
+            transform: translateX(0);
+        }
+
+        /* Right Side */
+        .timeline-item:nth-child(even) .timeline-content-wrapper {
+            left: 55%;
+            transform: translateX(50px); /* Animation start pos */
+        }
+        .timeline-item:nth-child(even).show .timeline-content-wrapper {
+            transform: translateX(0);
+        }
+
+        /* Central Dot */
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 20px;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FACC15; /* Gold */
+            border: 4px solid #003024;
+            box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.2);
+            z-index: 2;
+            transition: all 0.3s;
+        }
+
+        .timeline-item:hover .timeline-dot {
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.8);
+            transform: translateX(-50%) scale(1.2);
+        }
+
+        /* Card Style */
+        .prestasi-card {
+            background: #FFFFFF;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .prestasi-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Triangle/Arrow pointing to center */
+        .prestasi-card::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            width: 0; 
+            height: 0; 
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent; 
+        }
+
+        .timeline-item:nth-child(odd) .prestasi-card::after {
+            right: -10px;
+            border-left: 10px solid #FFFFFF;
+        }
+
+        .timeline-item:nth-child(even) .prestasi-card::after {
+            left: -10px;
+            border-right: 10px solid #FFFFFF;
+        }
+
+        /* Card Content Styling */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .date-badge {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .category-badge {
+            background: #FEF9C3; /* Light Yellow */
+            color: #854D0E; /* Dark Gold */
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #111;
+            margin-bottom: 10px;
+            line-height: 1.3;
+        }
+
+        .card-desc {
+            color: #4b5563;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* Limit 3 baris */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .btn-detail {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #d97706; /* Amber-600 */
+            font-weight: 700;
+            text-decoration: none;
+            transition: gap 0.2s;
+        }
+
+        .btn-detail:hover {
+            gap: 10px;
+            color: #b45309;
+        }
+
+        /* --- 4. RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .timeline-container::before {
+                left: 20px;
+            }
+            
+            .timeline-dot {
+                left: 20px;
+            }
+
+            .timeline-content-wrapper {
+                width: calc(100% - 60px);
+                left: 60px !important; /* Force all to right */
+                transform: translateX(20px) !important;
+            }
+
+            .timeline-item.show .timeline-content-wrapper {
+                transform: translateX(0) !important;
+            }
+
+            .prestasi-card::after {
+                left: -10px !important;
+                border-right: 10px solid #FFFFFF !important;
+                border-left: none !important;
+            }
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body>
 
     <%- include('../partials/navbar.ejs') %>
 
     <main class="container mx-auto p-6 md:p-12">
         <%- include('../partials/flash.ejs') %>
 
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-gray-800 mb-4">Prestasi Kami</h1>
-            <p class="text-lg text-gray-600">Berbagai pencapaian dan penghargaan yang telah diraih Bausasran</p>
+        <div class="page-header animate-fade-in">
+            <h1 class="page-title">Jejak Prestasi</h1>
+            <p class="page-subtitle">Pencapaian, penghargaan, dan momen kemenangan perjalanan Bausasran.</p>
+            <div class="divider"></div>
         </div>
 
-        <!-- Prestasi Timeline -->
         <% if(prestasiList && prestasiList.length > 0) { %>
-            <div class="max-w-4xl mx-auto">
+            <div class="timeline-container">
                 <% prestasiList.forEach((prestasi, index) => { %>
-                    <div class="relative mb-12 <%= index % 2 === 0 ? '' : 'md:ml-auto' %> md:w-1/2">
-                        <!-- Timeline Dot -->
-                        <div class="absolute top-0 <%= index % 2 === 0 ? 'md:right-0 md:-mr-6' : 'md:left-0 md:-ml-6' %> left-0 -ml-6 md:top-1/2 md:-mt-3">
-                            <div class="w-12 h-12 bg-blue-500 rounded-full border-4 border-white shadow-lg flex items-center justify-center">
-                                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
-                            </div>
-                        </div>
-
-                        <!-- Content Card -->
-                        <div class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow ml-8 md:ml-0 <%= index % 2 === 0 ? 'md:mr-12' : 'md:ml-12' %>">
-                            <div class="p-6">
-                                <div class="flex items-center justify-between mb-3">
-                                    <span class="text-sm font-semibold text-blue-600">
+                    <div class="timeline-item">
+                        <div class="timeline-dot"></div>
+                        
+                        <div class="timeline-content-wrapper">
+                            <div class="prestasi-card">
+                                <div class="card-header">
+                                    <span class="date-badge">
+                                        <i class="far fa-calendar-alt"></i>
                                         <%= new Date(prestasi.Tanggal).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' }) %>
                                     </span>
                                     <% if (prestasi.Kategori) { %>
-                                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-bold rounded-full">
-                                            <%= prestasi.Kategori %>
+                                        <span class="category-badge">
+                                            <i class="fas fa-trophy mr-1"></i> <%= prestasi.Kategori %>
                                         </span>
                                     <% } %>
                                 </div>
-                                <h3 class="text-2xl font-bold text-gray-900 mb-3"><%= prestasi.Judul %></h3>
-                                <a href="/prestasi/<%= prestasi.ID_Prestasi %>" class="inline-block text-blue-500 hover:text-blue-700 font-semibold">
-                                    Lihat Detail →
+
+                                <h3 class="card-title"><%= prestasi.Judul %></h3>
+                                
+                                <% if(prestasi.Deskripsi) { %>
+                                    <p class="card-desc"><%= prestasi.Deskripsi %></p>
+                                <% } %>
+
+                                <a href="/prestasi/<%= prestasi.ID_Prestasi %>" class="btn-detail">
+                                    Lihat Detail <i class="fas fa-arrow-right"></i>
                                 </a>
                             </div>
                         </div>
@@ -56,17 +318,38 @@
                 <% }) %>
             </div>
         <% } else { %>
-            <div class="text-center py-16">
-                <svg class="w-24 h-24 mx-auto text-gray-400 mb-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">Belum Ada Prestasi</h3>
-                <p class="text-gray-500">Prestasi akan segera hadir di sini!</p>
+            <div class="text-center py-20 animate-fade-in">
+                <div class="inline-block p-6 rounded-full bg-white bg-opacity-10 mb-4">
+                    <i class="fas fa-award fa-3x text-yellow-400"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-white mb-2">Belum Ada Prestasi</h3>
+                <p class="text-gray-400">Jejak prestasi akan segera ditambahkan di sini.</p>
             </div>
         <% } %>
     </main>
 
     <%- include('../partials/footer.ejs') %>
+
+    <script>
+        // Scroll Animation Observer
+        document.addEventListener("DOMContentLoaded", function() {
+            const timelineItems = document.querySelectorAll('.timeline-item');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('show');
+                    }
+                });
+            }, {
+                threshold: 0.2 // Trigger ketika 20% item terlihat
+            });
+
+            timelineItems.forEach(item => {
+                observer.observe(item);
+            });
+        });
+    </script>
 
 </body>
 </html>
